@@ -1,6 +1,7 @@
 <script setup>
   import Navbar from './components/Navbar.vue';
   import MainComp from './components/MainComp.vue';
+  import About from './components/About.vue';
   import { ref, onMounted } from 'vue';
   import { useStore } from 'vuex';
  
@@ -18,9 +19,14 @@
 </script>
 
 <template>
-  <button @click="$store.dispatch('getWeather')">getWeather</button>
+  <!-- <button @click="$store.dispatch('getWeather')">getWeather</button> -->
   <Navbar/>
-  <MainComp/>
+  <div v-if="!$store.state.toggle">
+    <MainComp/>
+  </div>
+  <div v-else>
+    <About/>
+  </div>
 </template>
 
 <style scoped lang="scss">
