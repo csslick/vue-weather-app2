@@ -1,8 +1,8 @@
-import { createStore } from 'vuex';
+import { defineStore } from 'pinia'
 
 // store 만들기
-export default createStore({
-  state: {
+export const useStore = defineStore('main', {
+  state: () => ({
     // initial state
     count: 0,
     weatherData: {
@@ -13,35 +13,32 @@ export default createStore({
       city: 'Seoul',
     },
     toggle: false, // true일때 about을 보여주기
-  },
-  mutations: {
-    // mutations(데이터 변경)
-    addCount(state, palyload) { 
-      state.count += 1 + palyload;
-    },
-    updateWeather(state, payload) {
-      state.weatherData.icon = payload.weather[0].icon;
-      state.weatherData.temp = payload.main.temp;
-      state.weatherData.text = payload.weather[0].description;
-      state.weatherData.location = payload.sys.country;
-      state.weatherData.city = payload.name;
-    },
-    onSearchCity(state, payload) {
-      state.weatherData.city = payload;
-    },
-    toggleButton (state) {
-      state.toggle = !state.toggle;
-    }
-  },
+  }),
   actions: {
-    getWeather(context) {
-      const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${context.state.weatherData.city}&appid=1a04a85ea40589be8e06a8562e3de28d`
-      fetch(API_URL)
+    addCount(palyload) { 
+      this.count += 1 + palyload;
+    },
+    updateWeather(payload) {
+      this.weatherData.icon = payload.weather[0].icon;
+      this.weatherData.temp = payload.main.temp;
+      this.weatherData.text = payload.weather[0].description;
+      this.weatherData.location = payload.sys.country;
+      this.weatherData.city = payload.name;
+    },
+    onSearchCity(payload) {
+      this.weatherData.city = payload;
+    },
+    toggleButton () {
+      this.toggle = !this.toggle
+    },
+    async getWeather() {
+      const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${this.weatherData.city}&appid=1a04a85ea40589be8e06a8562e3de28d`
+      await fetch(API_URL)
         .then(res => res.json())
         .then(data => {
           console.log(data);
-          // mutation 함수로 날씨 정보 업데이트
-          context.commit('updateWeather', data);
+          // 날씨 정보 업데이트
+          this.updateWeather(data); // 날씨 정보 업데이트
         })
         .catch(err => {
           alert('에러가 발생했습니다. 잠시 후 다시 시도해 주세요.');
