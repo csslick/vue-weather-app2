@@ -32,7 +32,8 @@ export const useStore = defineStore('main', {
       this.toggle = !this.toggle
     },
     async getWeather() {
-      const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${this.weatherData.city}&appid=1a04a85ea40589be8e06a8562e3de28d`
+      const API_KEY = import.meta.env.VITE_API_KEY;
+      const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${this.weatherData.city}&appid=${API_KEY}`
       await fetch(API_URL)
         .then(res => res.json())
         .then(data => {
